@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyABfITYDF1oX0ujjqqOVVK94E1ZTCoTT8A",
+  authDomain: "reparacion-73191.firebaseapp.com",
+  projectId: "reparacion-73191",
+  storageBucket: "reparacion-73191.firebasestorage.app",
+  messagingSenderId: "1040606956408",
+  appId: "1:1040606956408:web:9a62c3b3d3c4134b75d68d",
+  measurementId: "G-TQ7BTWSE7H"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const docRef = doc(db, "data", "shared");
+
+window.docRef = docRef;
+window.setDoc = setDoc;
+window.onSnapshot = onSnapshot;
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0e0f11;--bg2:#16181c;--bg3:#1e2127;--accent:#f97316;--accent2:#fbbf24;--text:#f0ede8;--muted:#8a8f9e;--border:#2a2d35;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--radius:14px;--radius-sm:8px;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;}
+h1,h2,h3{font-family:'Syne',sans-serif;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 0;margin-bottom:24px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-1px;}
+.logo-text span{color:var(--accent);}
+.sync-badge{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.sync-dot.ok{background:var(--green);}
+.sync-dot.syncing{background:var(--accent2);animation:pulse .8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.nav-tabs{display:flex;gap:4px;background:var(--bg2);border-radius:12px;padding:4px;border:1px solid var(--border);}
+.nav-tab{padding:7px 16px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);transition:all .2s;white-space:nowrap;}
+.nav-tab.active{background:var(--accent);color:#fff;font-weight:700;}
+.nav-tab:hover:not(.active){color:var(--text);background:var(--bg3);}
+.section{display:none;padding:0 24px 32px;animation:fadeUp .25s ease;}
+.section.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:transform .2s;}
+.metric-card:hover{transform:translateY(-2px);}
+.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0.6;}
+.metric-card.green::before{background:var(--green);}
+.metric-card.blue::before{background:var(--blue);}
+.metric-card.amber::before{background:var(--accent2);}
+.metric-icon{font-size:22px;margin-bottom:10px;}
+.metric-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.metric-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;}
+.metric-value.green{color:var(--green);}
+.metric-value.blue{color:var(--blue);}
+.metric-value.amber{color:var(--accent2);}
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.table-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);}
+.table-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 16px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;text-align:left;font-weight:500;background:var(--bg3);}
+td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.empty{text-align:center;color:var(--muted);padding:3rem!important;}
+.form-grid{display:grid;gap:20px;}
+.form-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;}
+.block-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.block-title span{font-size:16px;}
+.frow{display:grid;gap:12px;margin-bottom:12px;}
+.frow.c2{grid-template-columns:1fr 1fr;}
+.frow.c3{grid-template-columns:1fr 1fr 1fr;}
+.frow.c4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.frow:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:500;letter-spacing:.03em;}
+.field input,.field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;transition:border-color .2s;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
+.field select option{background:var(--bg2);}
+.result-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.result-row:last-child{border-bottom:none;padding-top:12px;}
+.result-row .rl{color:var(--muted);}
+.result-total{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;}
+.result-total.pos{color:var(--green);}
+.result-total.neg{color:var(--red);}
+.btn{padding:9px 18px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text);transition:all .15s;}
+.btn:hover{background:var(--bg2);border-color:var(--muted);}
+.btn-accent{background:var(--accent);color:#fff;border-color:transparent;font-weight:700;}
+.btn-accent:hover{background:#ea6c0a;}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:6px;}
+.btn-del{border-color:rgba(248,113,113,.3);color:var(--red);}
+.btn-del:hover{background:rgba(248,113,113,.1);}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.msg{text-align:right;font-size:12px;color:var(--green);margin-top:6px;height:16px;}
+.pos{color:var(--green);}
+.neg{color:var(--red);}
+.dif-easy{color:var(--green);}
+.dif-med{color:var(--accent2);}
+.dif-hard{color:var(--red);}
+.profit-num{font-weight:700;}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.guide-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:border-color .2s;margin-bottom:10px;}
+.guide-card:hover{border-color:var(--accent);}
+.guide-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.guide-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+.gtag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;letter-spacing:.05em;}
+.gtag-es{background:rgba(249,115,22,.2);color:var(--accent);}
+.gtag-eu{background:rgba(74,222,128,.2);color:var(--green);}
+.gtag-pro{background:rgba(251,191,36,.2);color:var(--accent2);}
+.guide-card p{font-size:13px;color:var(--muted);line-height:1.6;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.tag{font-size:10px;padding:2px 8px;background:var(--bg3);border-radius:99px;color:var(--muted);border:1px solid var(--border);}
+.steps-list{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;position:relative;padding-bottom:20px;}
+.step:last-child{padding-bottom:0;}
+.step::after{content:'';position:absolute;left:16px;top:34px;width:1px;height:calc(100% - 14px);background:var(--border);}
+.step:last-child::after{display:none;}
+.step-num{min-width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;z-index:1;}
+.step-body{padding-top:5px;}
+.step-body h4{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:3px;}
+.step-body p{font-size:13px;color:var(--muted);line-height:1.6;}
+.section-label{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:4px;}
+.section-sub{color:var(--muted);font-size:13px;margin-bottom:20px;}
+.estado-sel{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;padding:4px 6px;font-family:'DM Sans',sans-serif;}
+.model-name{font-weight:500;font-size:13px;}
+.model-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;flex-direction:column;gap:12px;}
+.loading-overlay.hidden{display:none;}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+
+<div class="loading-overlay" id="loader">
+  <div class="spinner"></div>
+  <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--muted);">Cargando datos compartidos...</div>
+</div>
+
+<div style="min-height:100vh;background:var(--bg);">
+  <div class="nav">
+    <div class="logo">
+      <div class="logo-icon">📱</div>
+      <div class="logo-text">S<span>L</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="sync-badge">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-label">Conectando...</span>
+      </div>
+      <button class="btn" style="font-size:12px;padding:5px 12px;" onclick="forceSync()">↻ Sync</button>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="tab('dashboard')">Panel</button>
+      <button class="nav-tab" onclick="tab('nueva')">+ Nueva compra</button>
+      <button class="nav-tab" onclick="tab('precios')">Precios</button>
+      <button class="nav-tab" onclick="tab('webs')">Webs y guía</button>
+    </div>
+  </div>
+
+  <div id="s-dashboard" class="section active">
+    <div class="section-label">Panel de control</div>
+    <div class="section-sub">Datos sincronizados en tiempo real entre tú y tu socio</div>
+    <div class="metrics">
+      <div class="metric-card"><div class="metric-icon">📦</div><div class="metric-label">En taller</div><div class="metric-value" id="m-activos">—</div></div>
+      <div class="metric-card blue"><div class="metric-icon">💸</div><div class="metric-label">Total invertido</div><div class="metric-value blue" id="m-invertido">—</div></div>
+      <div class="metric-card green"><div class="metric-icon">💰</div><div class="metric-label">Beneficio realizado</div><div class="metric-value green" id="m-beneficio">—</div></div>
+      <div class="metric-card amber"><div class="metric-icon">📈</div><div class="metric-label">ROI medio</div><div class="metric-value amber" id="m-roi">—</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header">
+        <div class="table-title">Mis dispositivos</div>
+        <button class="btn btn-accent" onclick="tab('nueva')">+ Añadir dispositivo</button>
+      </div>
+      <table>
+        <thead><tr><th>Dispositivo</th><th>Compra</th><th>Coste total</th><th>Precio venta</th><th>Estado</th><th>Beneficio</th><th></th></tr></thead>
+        <tbody id="t-body"><tr><td class="empty" colspan="7">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="s-nueva" class="section">
+    <div class="section-label">Nueva compra</div>
+    <div class="section-sub">Calcula si el negocio sale a cuenta antes de comprar</div>
+    <div class="form-grid">
+      <div class="form-block">
+        <div class="block-title"><span>📱</span> Dispositivo</div>
+        <div class="frow c3">
+          <div class="field"><label>Marca</label><select id="f-marca" onchange="fillModels()"><option>Apple</option><option>Samsung</option><option>Xiaomi</option><option>Google</option><option>OnePlus</option><option>Motorola</option><option>Otra</option></select></div>
+          <div class="field"><label>Modelo</label><select id="f-modelo"></select></div>
+          <div class="field"><label>Almacenamiento</label><select id="f-gb"><option>64 GB</option><option>128 GB</option><option>256 GB</option><option>512 GB</option><option>1 TB</option></select></div>
+        </div>
+        <div class="frow c3">
+          <div class="field"><label>Estado estético</label><select id="f-grado"><option value="A">A – Como nuevo</option><option value="B" selected>B – Marcas leves</option><option value="C">C – Marcas evidentes</option><option value="D">D – Muy deteriorado</option></select></div>
+          <div class="field"><label>Avería principal</label><select id="f-averia"><option>Pantalla rota</option><option>Batería agotada</option><option>No carga</option><option>Cámara rota</option><option>Tapa trasera</option><option>Sin imagen</option><option>No enciende</option><option>Múltiples averías</option></select></div>
+          <div class="field"><label>Proveedor</label><input type="text" id="f-prov" placeholder="Wallapop, eBay..."></div>
+        </div>
+        <div class="frow c2">
+          <div class="field"><label>IMEI</label><input type="text" id="f-imei" placeholder="Verifica antes de comprar"></div>
+          <div class="field"><label>Color</label><input type="text" id="f-color" placeholder="Negro, blanco..."></div>
+        </div>
+      </div>
+      <div class="form-block">
+        <div class="block-title"><span>🧾</span> Costes</div>
+        <div class="frow c4">
+          <div class="field"><label>Precio compra (€)</label><input type="number" id="c-compra" placeholder="0" oninput="calc()"></div>
+          <div class="field"><label>Pantalla (€)</label><input type="number" id="c-pantalla" placeholder="0" oninput="calc()"></div>
+          <div class="field"><label>Batería (€)</label><input type="number" id="c-bateria" placeholder="0" oninput="calc()"></div>
+          <div class="field"><label>Otros repuestos (€)</label><input type="number" id="c-otros" placeholder="0" oninput="calc()"></div>
+        </div>
+        <div class="frow c3">
+          <div class="field"><label>Mano de obra (€)</label><input type="number" id="c-mano" placeholder="0" oninput="calc()"></div>
+          <div class="field"><label>Envío / gastos (€)</label><input type="number" id="c-envio" placeholder="0" oninput="calc()"></div>
+          <div class="field"><label>Otros (€)</label><input type="number" id="c-misc" placeholder="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-block">
+          <div class="block-title"><span>🏷️</span> Venta</div>
+          <div class="frow c2">
+            <div class="field"><label>Precio mercado ref. (€)</label><input type="number" id="v-mercado" placeholder="0" oninput="calc()"></div>
+            <div class="field"><label>Tu precio venta (€)</label><input type="number" id="v-venta" placeholder="0" oninput="calc()"></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>Comisión plataforma</label><select id="v-com" onchange="calc()"><option value="0">Sin comisión</option><option value="5">5% – Wallapop Pro</option><option value="8">8% – eBay aprox.</option><option value="10">10% – Back Market</option><option value="12">12% – Swappie aprox.</option></select></div>
+          </div>
+        </div>
+        <div class="form-block">
+          <div class="block-title"><span>✅</span> Resultado</div>
+          <div class="result-box">
+            <div class="result-row"><span class="rl">Coste total</span><span id="r-coste">0 €</span></div>
+            <div class="result-row"><span class="rl">Comisión</span><span id="r-com" style="color:var(--red)">-0 €</span></div>
+            <div class="result-row"><span class="rl">Ingreso neto</span><span id="r-neto">0 €</span></div>
+            <div class="result-row"><span style="font-weight:700;">Beneficio</span><span class="result-total" id="r-ben">0 €</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="actions">
+          <button class="btn" onclick="resetF()">Limpiar</button>
+          <button class="btn btn-accent" onclick="save()">Guardar dispositivo →</button>
+        </div>
+        <div class="msg" id="fmsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="s-precios" class="section">
+    <div class="section-label">Tabla de precios</div>
+    <div class="section-sub">Precios orientativos de mercado para móviles reparados (grado B)</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Modelo</th><th>Comprar roto (máx.)</th><th>Coste reparación</th><th>Precio mercado</th><th>Margen bruto</th><th>Dificultad</th></tr></thead>
+        <tbody id="p-body"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted);padding:0 4px;">* Precios orientativos. Comprueba siempre en Wallapop y Back Market antes de decidir.</div>
+  </div>
+
+  <div id="s-webs" class="section">
+    <div class="section-label">Webs y guía paso a paso</div>
+    <div class="section-sub">Todo lo que necesitas para arrancar tu negocio</div>
+    <div class="guide-grid">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px;">Dónde comprar móviles rotos</div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Wallapop</h3><span class="gtag gtag-es">ESPAÑA</span></div><p>La fuente más accesible. Busca "pantalla rota", "no enciende", "avería". Activa alertas por modelo y negocia en persona.</p><div class="tags"><span class="tag">Particular</span><span class="tag">Negociable</span><span class="tag">Sin comisión vendedor</span></div></div>
+        <div class="guide-card"><div class="guide-card-header"><h3>eBay España</h3><span class="gtag gtag-eu">EUROPA</span></div><p>Filtra por "No funciona / Para piezas". Lotes de móviles rotos a muy buen precio. Revisa feedback del vendedor.</p><div class="tags"><span class="tag">Lotes</span><span class="tag">Buyer protection</span></div></div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Catawiki / Subasta.es</h3><span class="gtag gtag-es">ESPAÑA</span></div><p>Subastas de lotes de electrónica de operadoras y seguros. Precio muy bajo, volumen alto.</p><div class="tags"><span class="tag">Lotes</span><span class="tag">Precio bajo</span></div></div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Milanuncios</h3><span class="gtag gtag-es">ESPAÑA</span></div><p>Alternativa a Wallapop con menos competencia. Buenos precios en zonas pequeñas.</p><div class="tags"><span class="tag">Particular</span><span class="tag">Menos saturado</span></div></div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:20px 0 14px;">Dónde vender</div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Back Market</h3><span class="gtag gtag-pro">PROFESIONAL</span></div><p>Plataforma líder en Europa. ~10% comisión pero gran audiencia de compradores.</p><div class="tags"><span class="tag">Alto volumen</span><span class="tag">Garantía obligatoria</span></div></div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Swappie / eBay</h3><span class="gtag gtag-eu">EUROPA</span></div><p>Buenas opciones para venta internacional. eBay para mayor control, Swappie para volumen.</p><div class="tags"><span class="tag">Internacional</span><span class="tag">Mayor precio</span></div></div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:20px 0 14px;">Dónde comprar repuestos</div>
+        <div class="guide-card"><div class="guide-card-header"><h3>iFixit.com</h3><span class="gtag gtag-pro">CALIDAD</span></div><p>Los mejores repuestos con guías de reparación gratuitas. Algo más caros pero calidad garantizada.</p></div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Aliexpress</h3><span class="gtag gtag-eu">PRECIO</span></div><p>Precio muy bajo. Elige vendedores con +500 valoraciones y más de 4.8 estrellas. Entrega 2–4 semanas.</p></div>
+        <div class="guide-card"><div class="guide-card-header"><h3>Mobile Sentrix</h3><span class="gtag gtag-pro">EUROPA</span></div><p>Distribuidor europeo con buen stock de pantallas iPhone y Samsung. Envío rápido.</p></div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px;">Guía paso a paso</div>
+        <div class="form-block">
+          <div class="steps-list">
+            <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Encuentra el dispositivo</h4><p>Busca en Wallapop con "roto", "pantalla partida", "no enciende". Activa alertas por modelo y precio máximo.</p></div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Diagnóstico antes de comprar</h4><p>Pide fotos del IMEI. Verifica en apple.com/es/coverage o imei.info que no esté bloqueado ni robado.</p></div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Calcula si sale a cuenta</h4><p>Usa la calculadora de "Nueva compra". Regla de oro: coste total ≤ 60% del precio de mercado.</p></div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Compra los repuestos adecuados</h4><p>Para iPhone, prioriza pantallas OLED o Incell. Para Samsung, busca repuestos OEM. Aliexpress para precio, iFixit para garantía.</p></div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Documenta antes y después</h4><p>Fotografía el dispositivo roto al recibirlo y tras reparar. Te protege ante reclamaciones.</p></div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Vende con descripción honesta</h4><p>Indica grado (A/B/C), qué se ha reparado, si tiene caja original. La transparencia genera 5 estrellas.</p></div></div>
+            <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Reinvierte y escala</h4><p>Con 3–5 móviles vendidos ya tienes datos reales. Identifica los modelos más rentables y especialízate.</p></div></div>
+          </div>
+        </div>
+        <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.3);border-radius:var(--radius);padding:16px 20px;margin-top:16px;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:8px;">💡 Regla del 60%</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7;">Si <strong style="color:var(--text);">precio compra + repuestos + trabajo</strong> es mayor que el <strong style="color:var(--text);">60% del precio de venta</strong>, el margen es demasiado justo. No compres.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MODELS={Apple:['iPhone 11','iPhone 12','iPhone 12 Mini','iPhone 12 Pro','iPhone 13','iPhone 13 Mini','iPhone 13 Pro','iPhone 14','iPhone 14 Pro','iPhone 15','iPhone 15 Pro','iPhone SE 2022'],Samsung:['Galaxy S21','Galaxy S22','Galaxy S22 Ultra','Galaxy S23','Galaxy A53','Galaxy A54','Galaxy A32'],Xiaomi:['Xiaomi 12','Xiaomi 13','Redmi Note 11','Redmi Note 12','POCO X5 Pro'],Google:['Pixel 6','Pixel 6a','Pixel 7','Pixel 7a','Pixel 8'],OnePlus:['OnePlus 9','OnePlus 10 Pro','OnePlus 11','OnePlus Nord 2'],Motorola:['Moto G72','Moto G73','Edge 30','Edge 40'],Otra:['Otro modelo']};
+const PRICES=[{m:'iPhone 11',r:80,rep:70,mkt:200,d:'Fácil'},{m:'iPhone 12',r:110,rep:80,mkt:260,d:'Fácil'},{m:'iPhone 12 Pro',r:140,rep:95,mkt:330,d:'Medio'},{m:'iPhone 13',r:150,rep:90,mkt:370,d:'Medio'},{m:'iPhone 13 Pro',r:200,rep:110,mkt:460,d:'Medio'},{m:'iPhone 14',r:200,rep:100,mkt:480,d:'Medio'},{m:'iPhone 14 Pro',r:280,rep:130,mkt:620,d:'Difícil'},{m:'iPhone 15',r:280,rep:110,mkt:650,d:'Difícil'},{m:'iPhone SE 2022',r:60,rep:55,mkt:170,d:'Fácil'},{m:'Samsung S21',r:100,rep:80,mkt:270,d:'Medio'},{m:'Samsung S22',r:140,rep:90,mkt:360,d:'Medio'},{m:'Samsung S22 Ultra',r:180,rep:110,mkt:480,d:'Difícil'},{m:'Samsung S23',r:200,rep:100,mkt:520,d:'Difícil'},{m:'Samsung A53',r:50,rep:50,mkt:160,d:'Fácil'},{m:'Google Pixel 7',r:100,rep:80,mkt:280,d:'Medio'},{m:'Google Pixel 7a',r:80,rep:70,mkt:230,d:'Medio'},{m:'Xiaomi 13',r:100,rep:75,mkt:300,d:'Medio'},{m:'Redmi Note 12',r:40,rep:40,mkt:130,d:'Fácil'},{m:'OnePlus 11',r:120,rep:85,mkt:350,d:'Medio'}];
+
+const STORAGE_KEY = 'sl-shared-devs';
+let devs = [];
+let syncInterval = null;
+
+function setSyncing(){
+  document.getElementById('sync-dot').className='sync-dot syncing';
+  document.getElementById('sync-label').textContent='Sincronizando...';
+}
+function setOk(){
+  document.getElementById('sync-dot').className='sync-dot ok';
+  const now=new Date();
+  document.getElementById('sync-label').textContent='Sync ' + now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+}
+function setError(){
+  document.getElementById('sync-dot').className='sync-dot';
+  document.getElementById('sync-label').textContent='Sin conexión';
+}
+
+function loadFromCloud(){ return; }
+// replaced by Firebase
+  try {
+    const res = await // removed(STORAGE_KEY, true);
+    if(res && res.value){
+      const remote = JSON.parse(res.value);
+      if(JSON.stringify(remote) !== JSON.stringify(devs)){
+        devs = remote;
+        renderDash();
+      }
+    }
+    setOk();
+  } catch(e){
+    setError();
+  }
+}
+
+async function saveToCloud(){ setSyncing(); await window.setDoc(window.docRef, { list: devs }); setOk(); return; }
+// replaced
+  setSyncing();
+  try {
+    await // removed(STORAGE_KEY, JSON.stringify(devs), true);
+    setOk();
+  } catch(e){
+    setError();
+  }
+}
+
+function init(){
+  window.onSnapshot(window.docRef, (docSnap) => {
+    if (docSnap.exists()) {
+      devs = docSnap.data().list || [];
+      renderDash();
+      setOk();
+    }
+  });
+
+  try {
+    const res = await // removed(STORAGE_KEY, true);
+    if(res && res.value){ devs = JSON.parse(res.value); }
+    setOk();
+  } catch(e){ devs=[]; setError(); }
+  document.getElementById('loader').classList.add('hidden');
+  renderDash();
+  syncInterval = setInterval(loadFromCloud, 8000);
+}
+
+async function forceSync(){ await loadFromCloud(); }
+
+function tab(t){
+  document.querySelectorAll('.nav-tab').forEach((el,i)=>{el.classList.toggle('active',['dashboard','nueva','precios','webs'][i]===t);});
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('s-'+t).classList.add('active');
+  if(t==='dashboard') renderDash();
+  if(t==='precios') renderPrices();
+}
+
+function fillModels(){
+  const sel=document.getElementById('f-modelo'),m=document.getElementById('f-marca').value;
+  sel.innerHTML=(MODELS[m]||['Otro']).map(x=>`<option>${x}</option>`).join('');
+}
+fillModels();
+
+function v(id){return parseFloat(document.getElementById(id).value)||0;}
+
+function calc(){
+  const compra=v('c-compra'),pant=v('c-pantalla'),bat=v('c-bateria'),otros=v('c-otros'),mano=v('c-mano'),env=v('c-envio'),misc=v('c-misc'),venta=v('v-venta'),pcom=parseFloat(document.getElementById('v-com').value)||0;
+  const coste=compra+pant+bat+otros+mano+env+misc,com=venta*pcom/100,neto=venta-com,ben=neto-coste;
+  document.getElementById('r-coste').textContent=coste.toFixed(2)+' €';
+  document.getElementById('r-com').textContent='-'+com.toFixed(2)+' €';
+  document.getElementById('r-neto').textContent=neto.toFixed(2)+' €';
+  const rb=document.getElementById('r-ben');rb.textContent=(ben>=0?'+':'')+ben.toFixed(2)+' €';rb.className='result-total '+(ben>=0?'pos':'neg');
+}
+
+async function save(){
+  const compra=v('c-compra');
+  if(!compra){document.getElementById('fmsg').textContent='⚠️ Introduce el precio de compra';return;}
+  const pant=v('c-pantalla'),bat=v('c-bateria'),otros=v('c-otros'),mano=v('c-mano'),env=v('c-envio'),misc=v('c-misc'),venta=v('v-venta'),pcom=parseFloat(document.getElementById('v-com').value)||0;
+  const coste=compra+pant+bat+otros+mano+env+misc,com=venta*pcom/100,neto=venta-com,ben=neto-coste;
+  devs.push({id:Date.now(),marca:document.getElementById('f-marca').value,modelo:document.getElementById('f-modelo').value,gb:document.getElementById('f-gb').value,grado:document.getElementById('f-grado').value,averia:document.getElementById('f-averia').value,prov:document.getElementById('f-prov').value,compra,coste,venta,ben,estado:'roto',fecha:new Date().toLocaleDateString('es-ES')});
+  await saveToCloud();
+  document.getElementById('fmsg').textContent='✅ Guardado y sincronizado';
+  setTimeout(()=>document.getElementById('fmsg').textContent='',3000);
+  resetF();
+}
+
+function resetF(){
+  ['c-compra','c-pantalla','c-bateria','c-otros','c-mano','c-envio','c-misc','v-venta','v-mercado','f-prov','f-imei','f-color'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  calc();
+}
+
+async function changeEstado(id,val){
+  const d=devs.find(x=>x.id===id);if(d){d.estado=val;await saveToCloud();renderDash();}
+}
+
+async function del(id){
+  devs=devs.filter(x=>x.id!==id);await saveToCloud();renderDash();
+}
+
+function renderDash(){
+  const tb=document.getElementById('t-body');
+  if(!devs.length){
+    tb.innerHTML='<tr><td class="empty" colspan="7">Aún no hay dispositivos. Pulsa "+ Añadir dispositivo" para empezar 🚀</td></tr>';
+    ['m-invertido','m-beneficio','m-roi'].forEach(id=>document.getElementById(id).textContent='0 €');
+    document.getElementById('m-activos').textContent='0';
+    document.getElementById('m-roi').textContent='—';
+    return;
+  }
+  tb.innerHTML=devs.map(d=>`<tr>
+    <td><div class="model-name">${d.marca} ${d.modelo}</div><div class="model-sub">${d.gb} · ${d.averia} · Grado ${d.grado}</div></td>
+    <td>${d.compra.toFixed(0)} €</td>
+    <td>${d.coste.toFixed(0)} €</td>
+    <td>${d.venta?d.venta.toFixed(0)+' €':'—'}</td>
+    <td><select class="estado-sel" onchange="changeEstado(${d.id},this.value)">
+      <option value="roto" ${d.estado==='roto'?'selected':''}>🔴 Roto</option>
+      <option value="reparado" ${d.estado==='reparado'?'selected':''}>🟢 Reparado</option>
+      <option value="vendido" ${d.estado==='vendido'?'selected':''}>🔵 Vendido</option>
+    </select></td>
+    <td class="${d.ben>0?'pos':'neg'}" style="font-weight:700">${d.venta?(d.ben>=0?'+':'')+d.ben.toFixed(0)+' €':'—'}</td>
+    <td><button class="btn btn-sm btn-del" onclick="del(${d.id})">✕</button></td>
+  </tr>`).join('');
+  const inv=devs.reduce((s,d)=>s+d.coste,0),vendidos=devs.filter(d=>d.estado==='vendido'),ben=vendidos.reduce((s,d)=>s+d.ben,0),roi=inv>0?(ben/inv*100):0;
+  document.getElementById('m-activos').textContent=devs.filter(d=>d.estado!=='vendido').length;
+  document.getElementById('m-invertido').textContent=inv.toFixed(0)+' €';
+  const mb=document.getElementById('m-beneficio');mb.textContent=(ben>=0?'+':'')+ben.toFixed(0)+' €';mb.className='metric-value '+(ben>=0?'green':'neg');
+  document.getElementById('m-roi').textContent=vendidos.length?roi.toFixed(1)+'%':'—';
+}
+
+function renderPrices(){
+  document.getElementById('p-body').innerHTML=PRICES.map(p=>{const margen=p.mkt-p.r-p.rep,dc=p.d==='Fácil'?'dif-easy':p.d==='Medio'?'dif-med':'dif-hard',icon=p.d==='Fácil'?'●':p.d==='Medio'?'◆':'▲';return`<tr><td style="font-weight:500">${p.m}</td><td style="color:var(--accent)">hasta ${p.r} €</td><td style="color:var(--muted)">~${p.rep} €</td><td style="color:var(--blue)">${p.mkt} €</td><td class="profit-num ${margen>0?'pos':'neg'}">${margen>0?'+':''}${margen} €</td><td class="${dc}">${icon} ${p.d}</td></tr>`;}).join('');
+}
+
+init();
+</script>

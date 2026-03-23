@@ -1,157 +1,141 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SL Panel</title>
-
-<!-- Firebase -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyABfITYDF1oX0ujjqqOVVK94E1ZTCoTT8A",
-  authDomain: "reparacion-73191.firebaseapp.com",
-  projectId: "reparacion-73191",
-  storageBucket: "reparacion-73191.appspot.com",
-  messagingSenderId: "1040606956408",
-  appId: "1:1040606956408:web:9a62c3b3d3c4134b75d68d",
-  measurementId: "G-TQ7BTWSE7H"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const docRef = doc(db, "data", "shared"); // colección "data", documento "shared"
-
-// Hacerlo global para usar en scripts
-window.docRef = docRef;
-window.setDoc = setDoc;
-window.onSnapshot = onSnapshot;
-</script>
-
-<!-- Fuentes -->
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-
-<style>
-/* --- Copia exacta de tus estilos --- */
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#0e0f11;--bg2:#16181c;--bg3:#1e2127;--accent:#f97316;--accent2:#fbbf24;--text:#f0ede8;--muted:#8a8f9e;--border:#2a2d35;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--radius:14px;--radius-sm:8px;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;}
-h1,h2,h3{font-family:'Syne',sans-serif;}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 0;margin-bottom:24px;}
-.logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-1px;}
-.logo-text span{color:var(--accent);}
-.sync-badge{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;}
-.sync-dot.ok{background:var(--green);}
-.sync-dot.syncing{background:var(--accent2);animation:pulse .8s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.nav-tabs{display:flex;gap:4px;background:var(--bg2);border-radius:12px;padding:4px;border:1px solid var(--border);}
-.nav-tab{padding:7px 16px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);transition:all .2s;white-space:nowrap;}
-.nav-tab.active{background:var(--accent);color:#fff;font-weight:700;}
-.nav-tab:hover:not(.active){color:var(--text);background:var(--bg3);}
-.section{display:none;padding:0 24px 32px;animation:fadeUp .25s ease;}
-.section.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:transform .2s;}
-.metric-card:hover{transform:translateY(-2px);}
-.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0.6;}
-.metric-card.green::before{background:var(--green);}
-.metric-card.blue::before{background:var(--blue);}
-.metric-card.amber::before{background:var(--accent2);}
-.metric-icon{font-size:22px;margin-bottom:10px;}
-.metric-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-.metric-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;}
-.metric-value.green{color:var(--green);}
-.metric-value.blue{color:var(--blue);}
-.metric-value.amber{color:var(--accent2);}
-.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.table-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);}
-.table-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
-table{width:100%;border-collapse:collapse;}
-th{padding:10px 16px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;text-align:left;font-weight:500;background:var(--bg3);}
-td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,.02);}
-.empty{text-align:center;color:var(--muted);padding:3rem!important;}
-/* … (continúa todos tus estilos como los tenías) … */
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi App Realtime Firebase</title>
+  <style>
+    /* --- Estilos generales --- */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    #loading {
+      color: #888;
+      text-align: center;
+      margin: 20px 0;
+    }
+    #dataList {
+      margin-top: 20px;
+    }
+    .item {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      word-break: break-word;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    input {
+      width: calc(100% - 30px);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
+  <h1>Datos Compartidos</h1>
 
-<div class="loading-overlay" id="loader">
-  <div class="spinner"></div>
-  <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--muted);">Cargando datos compartidos...</div>
-</div>
+  <!-- Formulario para añadir datos -->
+  <input type="text" id="nuevoMensaje" placeholder="Escribe un mensaje">
+  <button id="btnAgregar">Agregar mensaje</button>
 
-<div style="min-height:100vh;background:var(--bg);">
-  <!-- Aquí pega todo el HTML de tus secciones: nav, dashboard, nueva, precios, webs -->
-</div>
+  <div id="loading">Cargando datos…</div>
+  <div id="dataList"></div>
 
-<script>
-/* -------------------
-Variables y modelos
-------------------- */
-const MODELS={Apple:['iPhone 11','iPhone 12','iPhone 12 Mini','iPhone 12 Pro','iPhone 13','iPhone 13 Mini','iPhone 13 Pro','iPhone 14','iPhone 14 Pro','iPhone 15','iPhone 15 Pro','iPhone SE 2022'],Samsung:['Galaxy S21','Galaxy S22','Galaxy S22 Ultra','Galaxy S23','Galaxy A53','Galaxy A54','Galaxy A32'],Xiaomi:['Xiaomi 12','Xiaomi 13','Redmi Note 11','Redmi Note 12','POCO X5 Pro'],Google:['Pixel 6','Pixel 6a','Pixel 7','Pixel 7a','Pixel 8'],OnePlus:['OnePlus 9','OnePlus 10 Pro','OnePlus 11','OnePlus Nord 2'],Motorola:['Moto G72','Moto G73','Edge 30','Edge 40'],Otra:['Otro modelo']};
+  <script type="module">
+    // --- Importar Firebase ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+    import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
 
-const PRICES=[ /* … tus precios … */ ];
+    // --- Configuración de Firebase ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyABfITYDF1oX0ujjqqOVVK94E1ZTCoTT8A",
+      authDomain: "reparacion-73191.firebaseapp.com",
+      databaseURL: "https://reparacion-73191-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "reparacion-73191",
+      storageBucket: "reparacion-73191.firebasestorage.app",
+      messagingSenderId: "1040606956408",
+      appId: "1:1040606956408:web:9a62c3b3d3c4134b75d68d",
+      measurementId: "G-TQ7BTWSE7H"
+    };
 
-let devs=[];
-let syncInterval=null;
+    // --- Inicializar Firebase ---
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app);
 
-/* -------------------
-Funciones de sincronización Firebase
-------------------- */
-function setSyncing(){document.getElementById('sync-dot').className='sync-dot syncing';document.getElementById('sync-label').textContent='Sincronizando...';}
-function setOk(){document.getElementById('sync-dot').className='sync-dot ok';const now=new Date();document.getElementById('sync-label').textContent='Sync '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');}
-function setError(){document.getElementById('sync-dot').className='sync-dot';document.getElementById('sync-label').textContent='Sin conexión';}
+    // --- Referencia a la colección en Realtime DB ---
+    const dataRef = ref(db, 'datosCompartidos');
 
-function init(){
-  window.onSnapshot(window.docRef,(docSnap)=>{
-    if(docSnap.exists()){
-      devs = docSnap.data().list || [];
-      renderDash();
-      setOk();
-    }else{
-      devs=[];
-      renderDash();
-      setOk();
+    // --- Elementos del DOM ---
+    const dataList = document.getElementById('dataList');
+    const loading = document.getElementById('loading');
+    const btnAgregar = document.getElementById('btnAgregar');
+    const nuevoMensaje = document.getElementById('nuevoMensaje');
+
+    // --- Función para mostrar datos ---
+    function mostrarDatos(snapshot) {
+      dataList.innerHTML = '';
+      if (snapshot.exists()) {
+        const datos = snapshot.val();
+        Object.keys(datos).forEach(key => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.textContent = `[${datos[key].fecha}] ${datos[key].mensaje}`;
+          dataList.appendChild(div);
+        });
+      } else {
+        dataList.innerHTML = '<div>No hay datos todavía.</div>';
+      }
+      loading.style.display = 'none';
     }
-  });
-  document.getElementById('loader').classList.add('hidden');
-  renderDash();
-  syncInterval=setInterval(()=>{/* se puede usar para recarga automática */},8000);
-}
 
-async function saveToCloud(){
-  setSyncing();
-  try{
-    await window.setDoc(window.docRef,{list:devs});
-    setOk();
-  }catch(e){
-    setError();
-  }
-}
+    // --- Leer datos en tiempo real ---
+    onValue(dataRef, snapshot => {
+      mostrarDatos(snapshot);
+    }, error => {
+      console.error('Error leyendo la DB:', error);
+      loading.textContent = 'Error al cargar los datos.';
+    });
 
-/* -------------------
-Funciones de la web: tabs, calculadora, guardar
-------------------- */
-function tab(t){document.querySelectorAll('.nav-tab').forEach((el,i)=>{el.classList.toggle('active',['dashboard','nueva','precios','webs'][i]===t);});document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));document.getElementById('s-'+t).classList.add('active');if(t==='dashboard') renderDash();if(t==='precios') renderPrices();}
-function v(id){return parseFloat(document.getElementById(id).value)||0;}
-function calc(){/* … tu calculadora exacta … */}
-function save(){/* … tu función guardar exacta … */}
-function renderDash(){/* … render del dashboard exacto … */}
-
-/* -------------------
-Inicialización
-------------------- */
-init();
-</script>
-
+    // --- Agregar un nuevo mensaje ---
+    btnAgregar.addEventListener('click', () => {
+      const mensaje = nuevoMensaje.value.trim();
+      if (!mensaje) return alert("Escribe un mensaje antes de agregarlo.");
+      const nuevoDatoRef = push(dataRef);
+      set(nuevoDatoRef, {
+        mensaje: mensaje,
+        fecha: new Date().toLocaleString()
+      }).then(() => {
+        nuevoMensaje.value = '';
+      }).catch(error => {
+        console.error('Error al agregar dato:', error);
+      });
+    });
+  </script>
 </body>
 </html>
